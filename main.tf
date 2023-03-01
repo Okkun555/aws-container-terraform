@@ -1,11 +1,5 @@
-# VPC
-resource "aws_vpc" "sbcntrVpc" {
-    cidr_block           = "10.0.0.0/16"
-    instance_tenancy     = "default"
-    enable_dns_support   = true
-    enable_dns_hostnames = true
-
-    tags = {
-        Name = "sbcntrVpc"
-    }
+provider "aws" {
+    region = "ap-northeast-1"
+    # IAM profile
+    profile = "aws-training"
 }
