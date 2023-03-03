@@ -46,7 +46,7 @@ resource "aws_route_table" "sbcntr-route-table" {
     vpc_id = "${aws_vpc.sbcntr-vpc.id}"
     tags = {
         Project = var.project
-        Name = "${var.project}-route-app"
+        Name = "${var.project}-route-table"
     }
 }
 
