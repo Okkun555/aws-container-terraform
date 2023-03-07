@@ -110,3 +110,63 @@ resource "aws_route_table_association" "sbcntr-route-db-1c" {
     route_table_id = aws_route_table.sbcntr-route-db.id
     subnet_id = aws_subnet.sbcntr-subnet-private-db-1c.id
 }
+
+# Ingress周りの設定
+# --------------------------------------------------------------
+# Subnet （Public)
+# --------------------------------------------------------------
+resource "aws_subnet" "sbcntr-subnet-public-ingress-1a" {
+    vpc_id = "${aws_vpc.sbcntr-vpc.id}"
+
+    availability_zone = "ap-northeast-1a"
+    cidr_block = "10.0.0.0/24"
+    map_public_ip_on_launch = true
+
+    tags = {
+        Name = "sbcntr-subnet-public-ingress-1a"
+    }
+}
+
+resource "aws_subnet" "sbcntr-subnet-public-ingress-1c" {
+    vpc_id = "${aws_vpc.sbcntr-vpc.id}"
+
+    availability_zone = "ap-northeast-1c"
+    cidr_block = "10.0.0.1/24"
+    map_public_ip_on_launch = true
+
+    tags = {
+        Name = "sbcntr-subnet-public-ingress-1c"
+    }
+}
+
+# --------------------------------------------------------------
+# Route Table（Ingress用）
+# --------------------------------------------------------------
+resource "aws_route_table" "sbcntr-route-ingress" {
+    vpc_id = "${aws_vpc.sbcntr-vpc.id}"
+    tags = {
+        Project = var.project
+        Name = "${var.project}-route-ingress"
+    }
+}
+
+resource "aws_route" "sbcntr-route-ingress" {
+    destination_cidr_block = "0.0.0.0/0"
+    route_table_id = aws_route_table.sbcntr-route-ingress.id
+    gateway_id = aws_internet_gateway.sbcntr-igw.id
+}
+
+resource "aws_route_table_association" "sbcntr-route-ingress-1a" {
+    route_table_id = aws_route_table.sbcntr-route-ingress.id
+    subnet_id = sbcntr-subnet-public-ingress-1a.id
+}
+
+resource "aws_route_table_association" "sbcntr-route-ingress-1c" {
+    route_table_id = aws_route_table.sbcntr-route-ingress.id
+    subnet_id = sbcntr-subnet-public-ingress-1c.id
+}
+
+# インターネットへ通信するためのゲートウェイ作成
+resource "aws_internet_gateway" "sbcntr-igw" {
+
+}
